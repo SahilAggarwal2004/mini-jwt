@@ -1,0 +1,23 @@
+{
+  "name": "mini-jwt",
+  "version": "0.1.0",
+  "description": "A token generator library to encode and decode data using a secret key",
+  "main": "./build/cjs/index.js",
+  "module": "./build/esm/index.js",
+  "scripts": {
+    "esm": "tsc",
+    "cjs": "tsc --module commonjs --outDir build/cjs",
+    "build": "npm i && npm run esm && npm run cjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SahilAggarwal2004/mini-jwt.git"
+  },
+  "keywords": [],
+  "author": "Sahil Aggarwal",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SahilAggarwal2004/mini-jwt/issues"
+  },
+  "homepage": "https://github.com/SahilAggarwal2004/mini-jwt#readme"
+}
