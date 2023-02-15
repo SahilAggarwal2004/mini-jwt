@@ -1,5 +1,4 @@
-// @ts-ignore
-import { encrypt, decrypt } from 'sjcl/core/convenience'
+import { encrypt, decrypt } from 'sjcl'
 
 const defaults = { v: 1, iter: 10000, ks: 128, ts: 64, mode: "ccm", adata: "", cipher: "aes" }
 

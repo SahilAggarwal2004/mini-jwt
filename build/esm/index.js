@@ -1,4 +1,4 @@
-import { encrypt, decrypt } from 'sjcl/core/convenience';
+import { encrypt, decrypt } from 'sjcl';
 const defaults = { v: 1, iter: 10000, ks: 128, ts: 64, mode: "ccm", adata: "", cipher: "aes" };
 function sign(data, secret, expiresIn = 0) {
     const { ct, iv, salt } = JSON.parse(encrypt(secret, JSON.stringify({ data, iat: Date.now(), exp: expiresIn })));
