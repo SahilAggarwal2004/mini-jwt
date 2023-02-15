@@ -1,15 +1,19 @@
-import sjcl from './sjcl';
+// @ts-ignore
+import { encrypt, decrypt } from 'sjcl/core/convenience'
+
+const defaults = { v: 1, iter: 10000, ks: 128, ts: 64, mode: "ccm", adata: "", cipher: "aes" }
 
 function sign(data: any, secret: string, expiresIn: number = 0): string {
-    const { iv, salt, ct } = JSON.parse(sjcl.encrypt(secret, JSON.stringify({ data, iat: Date.now(), exp: expiresIn })))
-    return `${iv}.${salt}.${ct}`
+    // @ts-ignore
+    const { ct, iv, salt } = JSON.parse(encrypt(secret, JSON.stringify({ data, iat: Date.now(), exp: expiresIn })))
+    return `${ct}.${iv}.${salt}`
 }
 
 function verify(token: string, secret: string): any {
     try {
-        const [iv, salt, ct] = token.split('.')
-        token = JSON.stringify({ iv, salt, ct, ...sjcl.defaults })
-        const { data, iat, exp } = JSON.parse(sjcl.decrypt(secret, token))
+        const [ct, iv, salt] = token.split('.')
+        token = JSON.stringify({ ct, iv, salt, ...defaults })
+        const { data, iat, exp } = JSON.parse(decrypt(secret, token))
         if (!exp || Date.now() > iat + exp) return data
         throw new Error()
     } catch { throw new Error('Invalid token or secret!') }

@@ -1,20 +1,18 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.verify = exports.sign = void 0;
-const sjcl_1 = __importDefault(require("./sjcl"));
+const convenience_1 = require("sjcl/core/convenience");
+const defaults = { v: 1, iter: 10000, ks: 128, ts: 64, mode: "ccm", adata: "", cipher: "aes" };
 function sign(data, secret, expiresIn = 0) {
-    const { iv, salt, ct } = JSON.parse(sjcl_1.default.encrypt(secret, JSON.stringify({ data, iat: Date.now(), exp: expiresIn })));
-    return `${iv}.${salt}.${ct}`;
+    const { ct, iv, salt } = JSON.parse((0, convenience_1.encrypt)(secret, JSON.stringify({ data, iat: Date.now(), exp: expiresIn })));
+    return `${ct}.${iv}.${salt}`;
 }
 exports.sign = sign;
 function verify(token, secret) {
     try {
-        const [iv, salt, ct] = token.split('.');
-        token = JSON.stringify(Object.assign({ iv, salt, ct }, sjcl_1.default.defaults));
-        const { data, iat, exp } = JSON.parse(sjcl_1.default.decrypt(secret, token));
+        const [ct, iv, salt] = token.split('.');
+        token = JSON.stringify(Object.assign({ ct, iv, salt }, defaults));
+        const { data, iat, exp } = JSON.parse((0, convenience_1.decrypt)(secret, token));
         if (!exp || Date.now() > iat + exp)
             return data;
         throw new Error();

@@ -1,6 +1,6 @@
 {
   "name": "mini-jwt",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A token generator library to encode and decode data using a secret key",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",
@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/SahilAggarwal2004/mini-jwt/issues"
   },
-  "homepage": "https://github.com/SahilAggarwal2004/mini-jwt#readme"
+  "homepage": "https://github.com/SahilAggarwal2004/mini-jwt#readme",
+  "dependencies": {
+    "sjcl": "^1.0.8"
+  },
+  "devDependencies": {
+    "@types/sjcl": "^1.0.30"
+  }
 }

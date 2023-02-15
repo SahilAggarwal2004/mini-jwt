@@ -8,7 +8,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "allowJs": true,
     "skipLibCheck": true,
     "rootDir": "./src",
     "outDir": "./build/esm",
