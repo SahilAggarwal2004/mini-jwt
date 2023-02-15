@@ -13,7 +13,7 @@ function verify(token, secret) {
         const [ct, iv, salt] = token.split('.');
         token = JSON.stringify(Object.assign({ ct, iv, salt }, defaults));
         const { data, iat, exp } = JSON.parse((0, sjcl_1.decrypt)(secret, token));
-        if (!exp || Date.now() > iat + exp)
+        if (!exp || Date.now() < iat + exp)
             return data;
         throw new Error();
     }

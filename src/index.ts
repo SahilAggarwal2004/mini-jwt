@@ -13,7 +13,7 @@ function verify(token: string, secret: string): any {
         const [ct, iv, salt] = token.split('.')
         token = JSON.stringify({ ct, iv, salt, ...defaults })
         const { data, iat, exp } = JSON.parse(decrypt(secret, token))
-        if (!exp || Date.now() > iat + exp) return data
+        if (!exp || Date.now() < iat + exp) return data
         throw new Error()
     } catch { throw new Error('Invalid token or secret!') }
 }
