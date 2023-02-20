@@ -1,6 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.verify = exports.sign = void 0;
+exports.decrypt = exports.encrypt = exports.verify = exports.sign = void 0;
+const sjcl_1 = __importDefault(require("sjcl"));
+const defaults = { v: 1, iter: 10000, ks: 128, ts: 64, mode: "ccm", adata: "", cipher: "aes" };
 const characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '/', '*', '~', '!', '@', '#', '$', '%', '^', '&'];
 const randomNumber = (min = 0, max = Number.MAX_SAFE_INTEGER) => min + Math.floor(Math.random() * (max - min + 1));
 const randomElement = (array) => array[randomNumber(0, array.length - 1)];
@@ -42,3 +47,22 @@ function verify(secret, token) {
     }
 }
 exports.verify = verify;
+function encrypt(secret, data, { expiresIn = 0 } = { expiresIn: 0 }) {
+    const { ct, iv, salt } = JSON.parse(sjcl_1.default.encrypt(secret, JSON.stringify({ data, iat: Date.now(), exp: expiresIn })));
+    return `${ct}.${iv}.${salt}`;
+}
+exports.encrypt = encrypt;
+function decrypt(secret, token) {
+    try {
+        const [ct, iv, salt] = token.split('.');
+        token = JSON.stringify(Object.assign({ ct, iv, salt }, defaults));
+        const { data, iat, exp } = JSON.parse(sjcl_1.default.decrypt(secret, token));
+        if (!exp || Date.now() < iat + exp)
+            return data;
+        throw new Error();
+    }
+    catch (_a) {
+        throw new Error('Invalid token or secret!');
+    }
+}
+exports.decrypt = decrypt;
