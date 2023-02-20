@@ -1,6 +1,6 @@
 {
   "name": "mini-jwt",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A token generator library to encode and decode data using a secret key",
   "main": "./build/cjs/index.js",
   "module": "./build/esm/index.js",

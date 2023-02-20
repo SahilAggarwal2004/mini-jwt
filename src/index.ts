@@ -1,6 +1,3 @@
-import sjcl from 'sjcl'
-
-const defaults = { v: 1, iter: 10000, ks: 128, ts: 64, mode: "ccm", adata: "", cipher: "aes" }
 const characters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', '/', '*', '~', '!', '@', '#', '$', '%', '^', '&']
 
 const randomNumber = (min: number = 0, max: number = Number.MAX_SAFE_INTEGER) => min + Math.floor(Math.random() * (max - min + 1))
@@ -42,20 +39,4 @@ function verify(secret: string, token: string) {
     } catch { throw new Error('Invalid token or secret!') }
 }
 
-function encrypt(secret: string, data: any, { expiresIn = 0 }: { expiresIn: number } = { expiresIn: 0 }): string {
-    // @ts-ignore
-    const { ct, iv, salt } = JSON.parse(sjcl.encrypt(secret, JSON.stringify({ data, iat: Date.now(), exp: expiresIn })))
-    return `${ct}.${iv}.${salt}`
-}
-
-function decrypt(secret: string, token: string) {
-    try {
-        const [ct, iv, salt] = token.split('.')
-        token = JSON.stringify({ ct, iv, salt, ...defaults })
-        const { data, iat, exp } = JSON.parse(sjcl.decrypt(secret, token))
-        if (!exp || Date.now() < iat + exp) return data
-        throw new Error()
-    } catch { throw new Error('Invalid token or secret!') }
-}
-
-export { sign, verify, encrypt, decrypt }
+export { sign, verify }
